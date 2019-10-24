@@ -1,0 +1,16 @@
+{
+  "name": "honeycomb-chainlink-workshop",
+  "version": "1.0.0",
+  "description": "An example dApp that connects to the Honeycomb marketplace",
+  "main": "index.js",
+  "scripts": {
+    "deploy-ropsten": "truffle migrate --network ropsten --reset"
+  },
+  "author": "Burak Benligiray",
+  "license": "ISC",
+  "dependencies": {
+    "chainlink": "^0.7.5",
+    "truffle-hdwallet-provider": "^1.0.17",
+    "webpack": "4.19.1"
+  }
+}
