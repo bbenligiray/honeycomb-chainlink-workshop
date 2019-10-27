@@ -1,4 +1,4 @@
-const LolBetter = artifacts.require("LolBetter");
+const LoLBettingPool = artifacts.require("LoLBettingPool");
 
 const linkTokenAddress = "0x20fE562d797A42Dcb3399062AE9546cd06f63280";
 const oracle = "0x4a3fbbb385b5efeb4bc84a25aaadcd644bd09721";
@@ -9,7 +9,7 @@ const teamA = "Clutch Gaming";
 const teamB = "Fnatic";
 
 module.exports = async function (deployer) {
-    await deployer.deploy(LolBetter, linkTokenAddress, oracle, jobId, paymentAmount, matchId, teamA, teamB);
-    const lolBetter = await LolBetter.deployed();
-    console.log("League of Legends Better contract address: " + lolBetter.address);
+    await deployer.deploy(LoLBettingPool, linkTokenAddress, oracle, jobId, paymentAmount, matchId, teamA, teamB);
+    const lolBettingPool = await LoLBettingPool.deployed();
+    console.log("LoL Betting Pool contract address: " + lolBettingPool.address);
 };
