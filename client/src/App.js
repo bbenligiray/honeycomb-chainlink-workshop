@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Button, Typography, Grid, TextField } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 
-import LolBetter from "./contracts/LolBetter.json";
+import LoLBettingPool from "./contracts/LoLBettingPool.json";
 import getWeb3 from "./utils/getWeb3";
 
 import { theme } from './utils/theme';
@@ -25,9 +25,9 @@ class App extends Component {
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
-      const deployedNetwork = LolBetter.networks[networkId];
+      const deployedNetwork = LoLBettingPool.networks[networkId];
       const contract = new web3.eth.Contract(
-        LolBetter.abi,
+        LoLBettingPool.abi,
         deployedNetwork && deployedNetwork.address,
       );
 
@@ -56,20 +56,20 @@ class App extends Component {
     const totalBetA = await this.state.web3.utils.fromWei(await this.state.contract.methods.totalBetA().call());
     const totalBetB = await this.state.web3.utils.fromWei(await this.state.contract.methods.totalBetB().call());
 
-    const myBetA = await this.state.web3.utils.fromWei(await this.state.contract.methods.getBetAmount(false).call({from: this.state.accounts[0]}));
-    const myBetB = await this.state.web3.utils.fromWei(await this.state.contract.methods.getBetAmount(true).call({from: this.state.accounts[0]}));
+    const myBetA = await this.state.web3.utils.fromWei(await this.state.contract.methods.getBetAmount(true).call({from: this.state.accounts[0]}));
+    const myBetB = await this.state.web3.utils.fromWei(await this.state.contract.methods.getBetAmount(false).call({from: this.state.accounts[0]}));
 
     const matchId = await this.state.contract.methods.matchId().call();
     const teamA = await this.state.contract.methods.teamA().call();
     const teamB = await this.state.contract.methods.teamB().call();
 
     const fulfilled = await this.state.contract.methods.fulfilled().call();
-    const result = await this.state.contract.methods.result().call();
+    const teamADidWin = await this.state.contract.methods.teamADidWin().call();
 
     var fulfillMessage;
     if (fulfilled)
     {
-        if (!result)
+        if (teamADidWin)
         {
             fulfillMessage = `${teamA} has won!`;
         }
@@ -83,7 +83,7 @@ class App extends Component {
         fulfillMessage = "Match result has not been received yet";
     }
     
-    this.setState({ totalBetA, totalBetB, myBetA, myBetB, matchId, teamA, teamB, fulfilled, result, fulfillMessage });
+    this.setState({ totalBetA, totalBetB, myBetA, myBetB, matchId, teamA, teamB, fulfilled, teamADidWin, fulfillMessage });
   }
 
   handleUpdateForm = (name, value) => {
@@ -126,18 +126,18 @@ class App extends Component {
   handleBet = async (team) => {
     this.setState({ message: 'Placing bet...' });
 
-    var betOutcome;
+    var isBetA;
     if (team === "teamA")
     {
-        betOutcome = false;
+        isBetA = true;
     }
     else if (team === "teamB")
     {
-        betOutcome = true;
+        isBetA = false;
     }
 
     try {
-        await this.state.contract.methods.bet(betOutcome).send({ from: this.state.accounts[0], value: this.state.web3.utils.toWei(this.state.betAmount), gas: GAS, gasPrice: GAS_PRICE });
+        await this.state.contract.methods.bet(isBetA).send({ from: this.state.accounts[0], value: this.state.web3.utils.toWei(this.state.betAmount), gas: GAS, gasPrice: GAS_PRICE });
         this.refreshState();
         this.setState({ message: 'Bet placed' });
       } catch (error) {

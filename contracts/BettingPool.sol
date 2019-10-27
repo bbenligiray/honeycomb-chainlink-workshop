@@ -3,31 +3,25 @@ pragma solidity 0.4.24;
 import "../node_modules/chainlink/contracts/ChainlinkClient.sol";
 import "../node_modules/openzeppelin-solidity/contracts/ownership/Ownable.sol";
 
-contract LolBetter is ChainlinkClient, Ownable{
+contract BettingPool is ChainlinkClient, Ownable
+{
     mapping(address => uint256) private betsA;
     mapping(address => uint256) private betsB;
 
-    uint256 private oraclePaymentAmount;
-    bytes32 private jobId;
-
-    string public matchId;
-    string public teamA;
-    string public teamB;
+    uint256 internal oraclePaymentAmount;
+    bytes32 internal jobId;
 
     uint256 public totalBetA;
     uint256 public totalBetB;
 
     bool public fulfilled;
-    bool public result;
+    bool public teamADidWin;
 
     constructor(
         address _link,
         address _oracle,
         bytes32 _jobId,
-        uint256 _oraclePaymentAmount,
-        string _matchId,
-        string _teamA,
-        string _teamB
+        uint256 _oraclePaymentAmount
         )
     Ownable()
     public
@@ -36,15 +30,12 @@ contract LolBetter is ChainlinkClient, Ownable{
         setChainlinkOracle(_oracle);
         jobId = _jobId;
         oraclePaymentAmount = _oraclePaymentAmount;
-        matchId = _matchId;
-        teamA = _teamA;
-        teamB = _teamB;
     }
 
-    function bet(bool betResult) external payable
+    function bet(bool isBetA) external payable
     {
         require(!fulfilled, "You can't bet after the match result has been delivered.");
-        if (!betResult)
+        if (isBetA)
         {
             betsA[msg.sender] += msg.value;
             totalBetA += msg.value;
@@ -59,7 +50,7 @@ contract LolBetter is ChainlinkClient, Ownable{
     function withdraw() external
     {
         require(fulfilled, "You can't withdraw before the match result has been delivered.");
-        if (!result)
+        if (teamADidWin)
         {
             msg.sender.transfer(((totalBetA + totalBetB) * betsA[msg.sender]) / totalBetA);
             betsA[msg.sender] = 0;
@@ -71,41 +62,15 @@ contract LolBetter is ChainlinkClient, Ownable{
         }
     }
 
-    function checkResult() external onlyOwner returns (bytes32 requestId)
+    function getBetAmount(bool isBetA) external view returns (uint256 betAmount)
     {
-        require(!fulfilled, "The match result has already been delivered.");
-        Chainlink.Request memory req = buildChainlinkRequest(jobId, this, this.fulfill.selector);
-        req.add("id", matchId);
-        req.add("type", "match");
-        req.add("copyPath", "datasportsgroup.competition.season.rounds.group.match.winner");
-        requestId = sendChainlinkRequestTo(chainlinkOracleAddress(), req, oraclePaymentAmount);
-    }
-
-    function getBetAmount(bool outcome) external view returns (uint256 betAmount)
-    {
-        if (!outcome)
+        if (isBetA)
         {
             betAmount = betsA[msg.sender];
         }
         else
         {
             betAmount = betsB[msg.sender];
-        }
-    }
-
-    function fulfill(bytes32 _requestId, bytes32 _data)
-    public
-    recordChainlinkFulfillment(_requestId)
-    {
-        if (_data == "team_A")
-        {
-            fulfilled = true;
-            result = false;
-        }
-        else if (_data == "team_B")
-        {
-            fulfilled = true;
-            result = true;
         }
     }
 }
