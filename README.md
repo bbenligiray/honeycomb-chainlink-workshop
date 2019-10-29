@@ -54,12 +54,12 @@ Fund it with [Ropsten ETH](https://faucet.metamask.io/) and [Ropsten LINK](https
 
 - Go to [Honeycomb marketplace](https://honeycomb.market) and log in.
 Go to the API listings and click the API named `Data Sports Group - Premium Sports Content`.
-Find the endpoint with the path `/lol/get_matches` and click the `Connect` button.
+Find the endpoint with the path `/soccer/get_matches` and click the `Connect` button.
 Select `Ropsten` as the network and `bytes32` as the data format.
 Note down the oracle address, JobID and LINK price.
 
 - Using the `Test` button and the API endpoints, find the ID of the match that will be bet on.
-For example, you can call `/lol/get_matches_day` with the parameters `{"day":"2019-11-02"}` to get a list of matches that will be played on that day.
+For example, you can call `/soccer/get_matches_day` with the parameters `{"day":"2019-11-02"}` to get a list of matches that will be played on that day.
 You can work your way through the API documentation to find alternative ways of getting a list of matches to be played.
 Note down the match ID.
 
