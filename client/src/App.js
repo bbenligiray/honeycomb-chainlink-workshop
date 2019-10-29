@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Button, Typography, Grid, TextField } from '@material-ui/core';
 import { ThemeProvider } from '@material-ui/styles';
 
-import LoLBettingPool from "./contracts/LoLBettingPool.json";
+import SoccerBettingPool from "./contracts/SoccerBettingPool.json";
 import getWeb3 from "./utils/getWeb3";
 
 import { theme } from './utils/theme';
@@ -25,9 +25,9 @@ class App extends Component {
 
       // Get the contract instance.
       const networkId = await web3.eth.net.getId();
-      const deployedNetwork = LoLBettingPool.networks[networkId];
+      const deployedNetwork = SoccerBettingPool.networks[networkId];
       const contract = new web3.eth.Contract(
-        LoLBettingPool.abi,
+        SoccerBettingPool.abi,
         deployedNetwork && deployedNetwork.address,
       );
 

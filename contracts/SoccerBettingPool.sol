@@ -2,12 +2,12 @@ pragma solidity 0.4.24;
 
 import "./BettingPool.sol";
 
-contract LoLBettingPool is BettingPool
+contract SoccerBettingPool is BettingPool
 {
     string public matchId;
     string public teamA;
     string public teamB;
-    
+
     constructor(
         address _link,
         address _oracle,
@@ -36,7 +36,7 @@ contract LoLBettingPool is BettingPool
         Chainlink.Request memory req = buildChainlinkRequest(jobId, this, this.fulfill.selector);
         req.add("id", matchId);
         req.add("type", "match");
-        req.add("copyPath", "datasportsgroup.competition.season.rounds.group.match.winner");
+        req.add("copyPath", "datasportsgroup.competition.season.rounds.match.winner");
         requestId = sendChainlinkRequestTo(chainlinkOracleAddress(), req, oraclePaymentAmount);
     }
 

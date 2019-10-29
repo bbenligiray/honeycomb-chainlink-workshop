@@ -59,7 +59,7 @@ Select `Ropsten` as the network and `bytes32` as the data format.
 Note down the oracle address, JobID and LINK price.
 
 - Using the `Test` button and the API endpoints, find the ID of the match that will be bet on.
-For example, you can call `/soccer/get_matches_day` with the parameters `{"day":"2019-11-02"}` to get a list of matches that will be played on that day.
+For example, you can call `/soccer/get_matches_day` with the parameters `{"day":"2019-10-20"}` to get a list of matches that will be played on that day.
 You can work your way through the API documentation to find alternative ways of getting a list of matches to be played.
 Note down the match ID.
 
@@ -102,7 +102,7 @@ For example, the `Withdraw` button should not be clickable before the match resu
 
 - Allow the contract creator to withdraw funds after some point.
 
-- Make oracle requests at deployment that get the team names (so the users doesn't need to trust the developer to enter the names correctly).
+- Make oracle requests at deployment that get the team names (so the user doesn't need to trust the developer to enter the names correctly).
 
 - You shouldn't have to deploy a contract for each match, make this contract reusable for different matches (make sure to listen for the `ChainlinkFulfilled` event with the correct `requestId`).
 
